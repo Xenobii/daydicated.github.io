@@ -1,0 +1,168 @@
+/**
+ * Daydicated Custom Styles
+ * 
+ * Minimal custom styling to complement Bootstrap 5.
+ * Uses CSS custom properties for easy theming.
+ */
+
+/* Custom properties */
+:root {
+    --rating-1: #dc3545; /* Red - Poor */
+    --rating-2: #fd7e14; /* Orange - Below Average */
+    --rating-3: #ffc107; /* Yellow - Average */
+    --rating-4: #20c997; /* Teal - Good */
+    --rating-5: #28a745; /* Green - Excellent */
+}
+
+/* Loading spinner overlay */
+#loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Day cell styling */
+.day-cell {
+    min-height: 60px;
+    font-size: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.day-cell.editable:hover {
+    background-color: #e9ecef;
+    transform: scale(1.02);
+}
+
+/* Rating color classes */
+.day-cell.rating-1 {
+    background-color: var(--rating-1);
+    color: white;
+}
+
+.day-cell.rating-2 {
+    background-color: var(--rating-2);
+    color: white;
+}
+
+.day-cell.rating-3 {
+    background-color: var(--rating-3);
+    color: #212529;
+}
+
+.day-cell.rating-4 {
+    background-color: var(--rating-4);
+    color: white;
+}
+
+.day-cell.rating-5 {
+    background-color: var(--rating-5);
+    color: white;
+}
+
+/* Rating stars */
+.rating-stars {
+    color: #ffd700;
+    text-shadow: 0 0 1px rgba(0,0,0,0.3);
+}
+
+/* Calendar card styling */
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7) !important;
+}
+
+/* Login section centering */
+#login-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-section .card {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Navbar styling */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* User selector in navbar */
+#user-selector {
+    min-width: 200px;
+}
+
+/* Export buttons */
+.btn-export {
+    min-width: 120px;
+}
+
+/* Alert container positioning */
+#alert-container {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
+
+/* Calendar container */
+#calendar-container {
+    padding-top: 1rem;
+}
+
+/* Modal improvements */
+.modal-header {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    color: white;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* Rating input styling */
+#edit-rating {
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .day-cell {
+        min-height: 50px;
+        font-size: 0.65rem;
+    }
+    
+    #user-selector {
+        min-width: 150px;
+    }
+    
+    .navbar-nav {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    #loading-spinner,
+    #alert-container,
+    .navbar,
+    .btn-export,
+    #edit-modal {
+        display: none !important;
+    }
+    
+    .day-cell {
+        border: 1px solid #000 !important;
+    }
+}
