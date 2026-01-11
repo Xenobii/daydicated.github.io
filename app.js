@@ -125,34 +125,29 @@ async function handleLogout() {
  */
 async function loadUserSelector() {
     try {
-        const users = await getAllUsers();
+        const users = await getAllUsers(); // now returns [{ uid, email }]
         const currentUser = getCurrentUser();
-        
-        // Clear existing options except the first one
+
+        // Clear existing options
         userSelector.innerHTML = '<option value="">Select a user...</option>';
-        
-        // Add current user first if they have entries
-        if (currentUser && users.includes(currentUser.uid)) {
-            const option = document.createElement('option');
-            option.value = currentUser.uid;
-            option.textContent = `${currentUser.email} (You)`;
-            option.selected = true;
-            userSelector.appendChild(option);
-        } else if (currentUser) {
-            // Add current user even if no entries yet
+
+        // Add current user first (always show current user)
+        if (currentUser) {
             const option = document.createElement('option');
             option.value = currentUser.uid;
             option.textContent = `${currentUser.email} (You)`;
             option.selected = true;
             userSelector.appendChild(option);
         }
-        
-        // Add other users
-        users.forEach(userId => {
-            if (userId !== currentUser?.uid) {
+
+        // Add other users with emails when available
+        users.forEach(userObj => {
+            const uid = userObj.uid || userObj;
+            const email = userObj.email || null;
+            if (uid !== currentUser?.uid) {
                 const option = document.createElement('option');
-                option.value = userId;
-                option.textContent = userId.substring(0, 8) + '...'; // Truncate for display
+                option.value = uid;
+                option.textContent = email ? email : (uid.substring ? uid.substring(0, 8) + '...' : String(uid));
                 userSelector.appendChild(option);
             }
         });

@@ -120,6 +120,7 @@ export async function saveEntry(date, rating, note) {
         
         await setDoc(entryRef, {
             userId: user.uid,
+            userEmail: user.email || null,
             date: date,
             rating: parseInt(rating),
             note: note || ''
@@ -145,13 +146,18 @@ export async function getAllUsers() {
     try {
         const entriesRef = collection(db, 'entries');
         const snapshot = await getDocs(entriesRef);
-        
-        const userIds = new Set();
+        const usersMap = new Map();
         snapshot.forEach((doc) => {
-            userIds.add(doc.data().userId);
+            const data = doc.data();
+            const uid = data.userId;
+            const email = data.userEmail || null;
+            if (!usersMap.has(uid)) {
+                usersMap.set(uid, email);
+            }
         });
-        
-        return Array.from(userIds);
+
+        // Return array of user objects: { uid, email }
+        return Array.from(usersMap.entries()).map(([uid, email]) => ({ uid, email }));
     } catch (error) {
         console.error('Error getting users:', error);
         throw error;
