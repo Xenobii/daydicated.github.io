@@ -20,6 +20,7 @@ let loginSection, appSection, loginForm, logoutBtn, userEmailSpan;
 let userSelector, calendarContainer, editModal, editForm;
 let editDateSpan, editRatingInput, editNoteInput;
 let exportCsvBtn, exportJsonBtn, loadingSpinner;
+let settingsBtn, settingsModal, settingsModalInstance;
 let editModalInstance;
 
 /**
@@ -41,9 +42,12 @@ function initElements() {
     exportCsvBtn = document.getElementById('export-csv-btn');
     exportJsonBtn = document.getElementById('export-json-btn');
     loadingSpinner = document.getElementById('loading-spinner');
+    settingsBtn = document.getElementById('settings-btn');
+    settingsModal = document.getElementById('settings-modal');
     
-    // Initialize Bootstrap modal
+    // Initialize Bootstrap modals
     editModalInstance = new bootstrap.Modal(editModal);
+    settingsModalInstance = new bootstrap.Modal(settingsModal);
 }
 
 /**
@@ -300,6 +304,66 @@ function setupEventListeners() {
     editForm.addEventListener('submit', handleEditSubmit);
     exportCsvBtn.addEventListener('click', handleExportCSV);
     exportJsonBtn.addEventListener('click', handleExportJSON);
+    settingsBtn.addEventListener('click', () => settingsModalInstance.show());
+    
+    // Theme mode toggle
+    document.querySelectorAll('input[name="theme-mode"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            setThemeMode(e.target.value);
+        });
+    });
+    
+    // Color picker
+    document.getElementById('color-picker').addEventListener('click', (e) => {
+        const swatch = e.target.closest('.color-swatch');
+        if (swatch) {
+            setPrimaryColor(swatch.dataset.color);
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+        }
+    });
+}
+
+/**
+ * Set theme mode (dark/light)
+ * @param {string} mode - 'dark' or 'light'
+ */
+function setThemeMode(mode) {
+    if (mode === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('daydicated-theme-mode', mode);
+}
+
+/**
+ * Set primary color
+ * @param {string} color - Hex color value
+ */
+function setPrimaryColor(color) {
+    document.documentElement.style.setProperty('--primary-color', color);
+    localStorage.setItem('daydicated-primary-color', color);
+}
+
+/**
+ * Load saved display settings from localStorage
+ */
+function loadDisplaySettings() {
+    // Load theme mode (default: dark)
+    const savedMode = localStorage.getItem('daydicated-theme-mode') || 'dark';
+    setThemeMode(savedMode);
+    const themeRadio = document.getElementById(`theme-${savedMode}`);
+    if (themeRadio) themeRadio.checked = true;
+    
+    // Load primary color (default: blue)
+    const savedColor = localStorage.getItem('daydicated-primary-color') || '#0d6efd';
+    setPrimaryColor(savedColor);
+    
+    // Update active swatch
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.classList.toggle('active', swatch.dataset.color === savedColor);
+    });
 }
 
 /**
@@ -307,6 +371,7 @@ function setupEventListeners() {
  */
 function init() {
     initElements();
+    loadDisplaySettings();
     setupEventListeners();
     onAuthChange(handleAuthStateChange);
 }

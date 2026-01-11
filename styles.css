@@ -12,6 +12,125 @@
     --rating-3: #ffc107; /* Yellow - Average */
     --rating-4: #20c997; /* Teal - Good */
     --rating-5: #28a745; /* Green - Excellent */
+    --primary-color: #0d6efd;
+    --bg-color: #ffffff;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --navbar-bg: var(--primary-color);
+}
+
+/* Dark mode */
+body.dark-mode {
+    --bg-color: #1a1a2e;
+    --text-color: #e9ecef;
+    --card-bg: #16213e;
+    --border-color: #2d3a5a;
+    --input-bg: #1f2937;
+    --input-border: #374151;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode card styling */
+body.dark-mode .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .card-body {
+    background-color: var(--card-bg);
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-color);
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25);
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #6c757d;
+}
+
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .modal-footer {
+    border-color: var(--border-color);
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #4b5563;
+    border-color: #4b5563;
+}
+
+body.dark-mode .form-control-plaintext {
+    color: var(--text-color);
+}
+
+body.dark-mode .form-text {
+    color: #9ca3af;
+}
+
+/* Primary color overrides */
+.navbar.bg-primary,
+.card-header.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 70%, black)) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 85%, black);
+    border-color: color-mix(in srgb, var(--primary-color) 80%, black);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 70%, black));
+    color: white;
+}
+
+/* Color swatch styling */
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    border-color: var(--text-color);
+    box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--text-color);
 }
 
 /* Loading spinner overlay */
@@ -28,6 +147,45 @@
     z-index: 9999;
 }
 
+/* Dark mode table styling */
+body.dark-mode .table {
+    color: var(--text-color);
+}
+
+body.dark-mode .table-bordered {
+    border-color: var(--border-color);
+}
+
+body.dark-mode .table-bordered > :not(caption) > * > * {
+    border-color: var(--border-color);
+}
+
+body.dark-mode .table > :not(caption) > * > * {
+    background-color: var(--card-bg);
+}
+
+body.dark-mode .table-light {
+    background-color: var(--input-bg) !important;
+    color: var(--text-color);
+}
+
+/* Dark mode button check styling */
+body.dark-mode .btn-check:checked + .btn-outline-secondary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
 /* Day cell styling */
 .day-cell {
     min-height: 60px;
@@ -38,6 +196,10 @@
 .day-cell.editable:hover {
     background-color: #e9ecef;
     transform: scale(1.02);
+}
+
+body.dark-mode .day-cell.editable:hover {
+    background-color: #2d3a5a;
 }
 
 /* Rating color classes */
