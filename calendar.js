@@ -213,10 +213,10 @@ function renderMonth(month, container, isEditable, onDayClick) {
     
     // Day names header
     const dayNamesRow = document.createElement('div');
-    dayNamesRow.className = 'row g-1 mb-1';
+    dayNamesRow.className = 'calendar-week calendar-week--header';
     DAY_NAMES.forEach(day => {
         const dayCol = document.createElement('div');
-        dayCol.className = 'col text-center fw-bold small';
+        dayCol.className = 'calendar-day calendar-day--header text-center fw-bold small';
         dayCol.textContent = day;
         dayNamesRow.appendChild(dayCol);
     });
@@ -224,12 +224,12 @@ function renderMonth(month, container, isEditable, onDayClick) {
     
     // Calendar weeks
     let currentWeek = document.createElement('div');
-    currentWeek.className = 'row g-1 mb-1';
+    currentWeek.className = 'calendar-week';
     
     // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = 'col';
+        emptyCell.className = 'calendar-day calendar-day--empty';
         currentWeek.appendChild(emptyCell);
     }
     
@@ -240,7 +240,7 @@ function renderMonth(month, container, isEditable, onDayClick) {
         const entry = currentEntries[dateStr];
         
         const dayCell = document.createElement('div');
-        dayCell.className = 'col';
+        dayCell.className = 'calendar-day';
         
         const dayContent = document.createElement('div');
         dayContent.className = 'day-cell p-1 border rounded text-center';
@@ -251,11 +251,12 @@ function renderMonth(month, container, isEditable, onDayClick) {
             dayContent.classList.add(`rating-${entry.rating}`);
         }
         
-        // Make clickable if editable
-        if (isEditable) {
-            dayContent.classList.add('editable');
+        // Make clickable for editing or viewing existing entries
+        const canView = isEditable || !!entry;
+        if (canView) {
+            dayContent.classList.add(isEditable ? 'editable' : 'readonly');
             dayContent.style.cursor = 'pointer';
-            dayContent.addEventListener('click', () => onDayClick(dateStr, entry));
+            dayContent.addEventListener('click', () => onDayClick(dateStr, entry, isEditable));
         }
         
         // Day number
@@ -289,7 +290,7 @@ function renderMonth(month, container, isEditable, onDayClick) {
         if ((firstDay + day) % 7 === 0 && day < daysInMonth) {
             body.appendChild(currentWeek);
             currentWeek = document.createElement('div');
-            currentWeek.className = 'row g-1 mb-1';
+            currentWeek.className = 'calendar-week';
         }
     }
     
@@ -297,7 +298,7 @@ function renderMonth(month, container, isEditable, onDayClick) {
     const remainingCells = 7 - currentWeek.children.length;
     for (let i = 0; i < remainingCells && remainingCells < 7; i++) {
         const emptyCell = document.createElement('div');
-        emptyCell.className = 'col';
+        emptyCell.className = 'calendar-day calendar-day--empty';
         currentWeek.appendChild(emptyCell);
     }
     

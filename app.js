@@ -18,9 +18,11 @@ import { exportCSV, exportJSON } from './export.js';
 // DOM Elements
 let loginSection, appSection, loginForm, logoutBtn, userEmailSpan;
 let userSelector, calendarContainer, editModal, editForm;
-let editDateSpan, editRatingInput, editNoteInput;
+let editDateSpan, editRatingInput, editNoteInput, editModalLabel, editSaveButton;
 let exportCsvBtn, exportJsonBtn, loadingSpinner;
+let themeButtons;
 let editModalInstance;
+const THEME_STORAGE_KEY = 'daydicated-theme';
 
 /**
  * Initialize DOM element references
@@ -38,9 +40,12 @@ function initElements() {
     editDateSpan = document.getElementById('edit-date');
     editRatingInput = document.getElementById('edit-rating');
     editNoteInput = document.getElementById('edit-note');
+    editModalLabel = document.getElementById('edit-modal-label');
+    editSaveButton = editForm.querySelector('button[type="submit"]');
     exportCsvBtn = document.getElementById('export-csv-btn');
     exportJsonBtn = document.getElementById('export-json-btn');
     loadingSpinner = document.getElementById('loading-spinner');
+    themeButtons = document.querySelectorAll('[data-theme-value]');
     
     // Initialize Bootstrap modal
     editModalInstance = new bootstrap.Modal(editModal);
@@ -166,11 +171,25 @@ async function loadUserSelector() {
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {Object|null} entry - Existing entry data or null
  */
-function handleDayClick(date, entry) {
+function handleDayClick(date, entry, isEditable) {
+    const canEdit = !!isEditable;
+
     editDateSpan.textContent = date;
     editRatingInput.value = entry?.rating || 3;
     editNoteInput.value = entry?.note || '';
-    
+
+    editRatingInput.disabled = !canEdit;
+    editNoteInput.disabled = !canEdit;
+    editSaveButton.disabled = !canEdit;
+    editSaveButton.classList.toggle('d-none', !canEdit);
+    editForm.dataset.readonly = canEdit ? 'false' : 'true';
+
+    if (editModalLabel) {
+        editModalLabel.innerHTML = canEdit
+            ? '<i class="bi bi-pencil-square"></i> Edit Entry'
+            : '<i class="bi bi-eye"></i> View Entry';
+    }
+
     editModalInstance.show();
 }
 
@@ -180,6 +199,11 @@ function handleDayClick(date, entry) {
  */
 async function handleEditSubmit(e) {
     e.preventDefault();
+
+    if (editForm.dataset.readonly === 'true') {
+        editModalInstance.hide();
+        return;
+    }
     
     const date = editDateSpan.textContent;
     const rating = editRatingInput.value;
@@ -307,12 +331,44 @@ function setupEventListeners() {
     exportJsonBtn.addEventListener('click', handleExportJSON);
 }
 
+function applyThemePreference(theme) {
+    const root = document.documentElement;
+
+    if (theme === 'system') {
+        root.removeAttribute('data-theme');
+    } else {
+        root.setAttribute('data-theme', theme);
+    }
+
+    themeButtons.forEach((button) => {
+        const isActive = button.dataset.themeValue === theme;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+    });
+}
+
+function initThemeToggle() {
+    if (!themeButtons.length) return;
+
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'system';
+    applyThemePreference(savedTheme);
+
+    themeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.themeValue || 'system';
+            localStorage.setItem(THEME_STORAGE_KEY, theme);
+            applyThemePreference(theme);
+        });
+    });
+}
+
 /**
  * Initialize the application
  */
 function init() {
     initElements();
     setupEventListeners();
+    initThemeToggle();
     onAuthChange(handleAuthStateChange);
 }
 
