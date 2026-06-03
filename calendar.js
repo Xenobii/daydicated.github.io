@@ -271,19 +271,32 @@ function renderMonth(month, container, isEditable, onDayClick) {
         dayNum.textContent = day;
         dayContent.appendChild(dayNum);
         
-        // Rating display
+        // Rating display (Stars on desktop, Emoji on mobile)
         if (entry && entry.rating) {
-            const ratingDisplay = document.createElement('div');
-            ratingDisplay.className = 'rating-stars small';
-            ratingDisplay.textContent = '★'.repeat(entry.rating);
-            dayContent.appendChild(ratingDisplay);
+            const ratingContainer = document.createElement('div');
+            ratingContainer.className = 'rating-display';
+            
+            const ratingStars = document.createElement('span');
+            ratingStars.className = 'rating-stars small';
+            ratingStars.textContent = '★'.repeat(entry.rating);
+            
+            const ratingEmoji = document.createElement('span');
+            ratingEmoji.className = 'rating-emoji small';
+            // Mapping ratings 1-5 to standard emojis
+            const emojis = ['💀', '😕', '😐', '🙂', '😊'];
+            ratingEmoji.textContent = emojis[entry.rating - 1];
+            
+            ratingContainer.appendChild(ratingStars);
+            ratingContainer.appendChild(ratingEmoji);
+            dayContent.appendChild(ratingContainer);
         }
         
         // Note preview (truncated)
         if (entry && entry.note) {
             const notePreview = document.createElement('div');
-            notePreview.className = 'text-muted small text-truncate';
-            notePreview.style.fontSize = '0.65rem';
+            notePreview.className = 'note-preview text-truncate';
+            notePreview.style.fontSize = '0.75rem';
+            notePreview.style.fontWeight = 'bold';
             notePreview.textContent = entry.note.substring(0, 10);
             notePreview.title = entry.note;
             dayContent.appendChild(notePreview);
@@ -325,13 +338,13 @@ function renderMonth(month, container, isEditable, onDayClick) {
 export function renderCalendar(container, isEditable, onDayClick) {
     container.innerHTML = '';
     
-    // Create row for months (3 columns on large screens)
+    // Create row for months (2 columns on large screens to increase width)
     const row = document.createElement('div');
     row.className = 'row';
     
     for (let month = 0; month < 12; month++) {
         const col = document.createElement('div');
-        col.className = 'col-12 col-md-6 col-lg-4';
+        col.className = 'col-12 col-xl-6';
         renderMonth(month, col, isEditable, onDayClick);
         row.appendChild(col);
     }

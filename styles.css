@@ -21,25 +21,34 @@
     --accent-rgb: 10, 132, 255;
     --accent-strong: #0a6bff;
     --accent-contrast: #ffffff;
-    /* Change --toolbar-bg to customize the toolbar color. */
+    
+    /* Toolbar variables */
     --toolbar-bg: #0d1b32;
     --toolbar-fg: #f5f9ff;
     --toolbar-border: rgba(255, 255, 255, 0.12);
+    
+    /* Day Cards Text Color Dynamic Variables */
+    --day-text-color: #334155; /* Dark gray for light mode */
+    --day-text-shadow: none;
+
     --shadow-strong: 0 18px 60px rgba(10, 17, 30, 0.12);
     --shadow-soft: 0 8px 24px rgba(10, 17, 30, 0.08);
     --radius-lg: 18px;
     --radius-md: 12px;
     --radius-sm: 8px;
     --ring: 0 0 0 3px rgba(var(--accent-rgb), 0.25);
+    
     --bg-gradient:
         radial-gradient(120% 120% at 10% 0%, rgba(10, 132, 255, 0.1), rgba(255, 255, 255, 0) 55%),
         radial-gradient(120% 120% at 90% 10%, rgba(34, 197, 94, 0.08), rgba(255, 255, 255, 0) 45%),
         linear-gradient(180deg, var(--bg-0), var(--bg-1));
+        
     --rating-1: #ef4444;
     --rating-2: #f97316;
     --rating-3: #fbbf24;
     --rating-4: #10b981;
     --rating-5: #22c55e;
+    
     --bs-primary: var(--accent);
     --bs-primary-rgb: var(--accent-rgb);
     --bs-body-color: var(--text-1);
@@ -66,10 +75,15 @@
         --toolbar-bg: #0f172a;
         --toolbar-fg: #e8eef9;
         --toolbar-border: rgba(255, 255, 255, 0.08);
+        
+        --day-text-color: #ffffff; /* White text for dark mode */
+        --day-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+
         --bg-gradient:
             radial-gradient(120% 120% at 10% 0%, rgba(95, 162, 255, 0.16), rgba(0, 0, 0, 0) 55%),
             radial-gradient(120% 120% at 90% 10%, rgba(34, 197, 94, 0.12), rgba(0, 0, 0, 0) 45%),
             linear-gradient(180deg, var(--bg-0), var(--bg-1));
+            
         --rating-1: #f06a6a;
         --rating-2: #f4aa6a;
         --rating-3: #f6d178;
@@ -95,10 +109,15 @@
     --toolbar-bg: #0d1b32;
     --toolbar-fg: #f5f9ff;
     --toolbar-border: rgba(255, 255, 255, 0.12);
+    
+    --day-text-color: #334155; /* Dark gray for light mode */
+    --day-text-shadow: none;
+
     --bg-gradient:
         radial-gradient(120% 120% at 10% 0%, rgba(10, 132, 255, 0.1), rgba(255, 255, 255, 0) 55%),
         radial-gradient(120% 120% at 90% 10%, rgba(34, 197, 94, 0.08), rgba(255, 255, 255, 0) 45%),
         linear-gradient(180deg, var(--bg-0), var(--bg-1));
+        
     --rating-1: #ef4444;
     --rating-2: #f97316;
     --rating-3: #fbbf24;
@@ -123,10 +142,15 @@
     --toolbar-bg: #0f172a;
     --toolbar-fg: #e8eef9;
     --toolbar-border: rgba(255, 255, 255, 0.08);
+    
+    --day-text-color: #ffffff; /* White text for dark mode */
+    --day-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+
     --bg-gradient:
         radial-gradient(120% 120% at 10% 0%, rgba(95, 162, 255, 0.16), rgba(0, 0, 0, 0) 55%),
         radial-gradient(120% 120% at 90% 10%, rgba(34, 197, 94, 0.12), rgba(0, 0, 0, 0) 45%),
         linear-gradient(180deg, var(--bg-0), var(--bg-1));
+        
     --rating-1: #f06a6a;
     --rating-2: #f4aa6a;
     --rating-3: #f6d178;
@@ -149,11 +173,7 @@ body {
     line-height: 1.5;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
+h1, h2, h3, h4, h5 {
     letter-spacing: -0.01em;
 }
 
@@ -269,6 +289,17 @@ a {
 .theme-toggle .btn.active {
     background: rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Custom styling for navbar collapse on mobile */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        margin-top: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 }
 
 /* Cards */
@@ -412,23 +443,23 @@ a {
     justify-content: center;
     text-align: center;
     font-weight: 600;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     color: var(--text-2);
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 .calendar-day--empty {
-    min-height: 72px;
+    min-height: 90px;
     pointer-events: none;
 }
 
 /* Day cell styling */
 .day-cell {
-    height: 72px;
-    min-height: 72px;
+    height: 90px;
+    min-height: 90px;
     width: 100%;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     background: var(--surface-1);
     border: 1px solid var(--border) !important;
     border-radius: var(--radius-sm) !important;
@@ -442,7 +473,7 @@ a {
 }
 
 .day-cell .fw-bold {
-    color: var(--text-1);
+    color: inherit;
 }
 
 .day-cell.editable:hover {
@@ -456,37 +487,34 @@ a {
     border-color: rgba(var(--accent-rgb), 0.2) !important;
 }
 
-/* Rating color classes */
-.day-cell.rating-1 {
-    background-color: var(--rating-1);
-    color: #ffffff;
-}
-
-.day-cell.rating-2 {
-    background-color: var(--rating-2);
-    color: #ffffff;
-}
-
-.day-cell.rating-3 {
-    background-color: var(--rating-3);
-    color: #1f2937;
-}
-
-.day-cell.rating-4 {
-    background-color: var(--rating-4);
-    color: #ffffff;
-}
-
+/* Day Cell Rating Layouts (Uses dynamic variables based on theme mode) */
+.day-cell.rating-1, 
+.day-cell.rating-2, 
+.day-cell.rating-3, 
+.day-cell.rating-4, 
 .day-cell.rating-5 {
-    background-color: var(--rating-5);
-    color: #ffffff;
+    color: var(--day-text-color) !important;
+    text-shadow: var(--day-text-shadow) !important;
 }
+
+.day-cell.rating-1 { background-color: var(--rating-1); }
+.day-cell.rating-2 { background-color: var(--rating-2); }
+.day-cell.rating-3 { background-color: var(--rating-3); }
+.day-cell.rating-4 { background-color: var(--rating-4); }
+.day-cell.rating-5 { background-color: var(--rating-5); }
 
 /* Rating stars */
 .rating-stars {
-    color: #f6d36b;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    color: #FFD700 !important;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4) !important;
     letter-spacing: 0.03em;
+}
+
+/* Hide rating emoji by default (desktop view) */
+.rating-emoji {
+    display: none;
+    text-shadow: none !important;
+    font-size: 1.1em;
 }
 
 .day-cell .text-truncate {
@@ -494,6 +522,12 @@ a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* Note preview specifically */
+.day-cell .note-preview {
+    color: inherit;
+    opacity: 0.95;
 }
 
 /* User selector in navbar */
@@ -533,18 +567,26 @@ a {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .day-cell {
-        height: 58px;
-        min-height: 58px;
-        font-size: 0.65rem;
+        height: 70px;
+        min-height: 70px;
+        font-size: 0.75rem;
     }
 
     #user-selector {
-        min-width: 150px;
+        min-width: 100%;
     }
 
-    .navbar-nav {
-        flex-direction: row;
-        gap: 0.5rem;
+    .btn-export {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Swap stars for emojis on mobile to be compact */
+    .rating-stars {
+        display: none;
+    }
+    .rating-emoji {
+        display: inline;
     }
 }
 
