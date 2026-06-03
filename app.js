@@ -20,6 +20,7 @@ let loginSection, appSection, loginForm, logoutBtn, userEmailSpan;
 let userSelector, calendarContainer, editModal, editForm;
 let editDateSpan, editRatingInput, editNoteInput, editModalLabel, editSaveButton;
 let exportCsvBtn, exportJsonBtn, loadingSpinner;
+let settingsBtn, settingsModal, settingsModalInstance;
 let themeButtons;
 let editModalInstance;
 const THEME_STORAGE_KEY = 'daydicated-theme';
@@ -45,10 +46,13 @@ function initElements() {
     exportCsvBtn = document.getElementById('export-csv-btn');
     exportJsonBtn = document.getElementById('export-json-btn');
     loadingSpinner = document.getElementById('loading-spinner');
+    settingsBtn = document.getElementById('settings-btn');
+    settingsModal = document.getElementById('settings-modal');
     themeButtons = document.querySelectorAll('[data-theme-value]');
     
-    // Initialize Bootstrap modal
+    // Initialize Bootstrap modals
     editModalInstance = new bootstrap.Modal(editModal);
+    settingsModalInstance = new bootstrap.Modal(settingsModal);
 }
 
 /**
@@ -130,34 +134,29 @@ async function handleLogout() {
  */
 async function loadUserSelector() {
     try {
-        const users = await getAllUsers();
+        const users = await getAllUsers(); // now returns [{ uid, email }]
         const currentUser = getCurrentUser();
-        
-        // Clear existing options except the first one
+
+        // Clear existing options
         userSelector.innerHTML = '<option value="">Select a user...</option>';
-        
-        // Add current user first if they have entries
-        if (currentUser && users.includes(currentUser.uid)) {
-            const option = document.createElement('option');
-            option.value = currentUser.uid;
-            option.textContent = `${currentUser.email} (You)`;
-            option.selected = true;
-            userSelector.appendChild(option);
-        } else if (currentUser) {
-            // Add current user even if no entries yet
+
+        // Add current user first (always show current user)
+        if (currentUser) {
             const option = document.createElement('option');
             option.value = currentUser.uid;
             option.textContent = `${currentUser.email} (You)`;
             option.selected = true;
             userSelector.appendChild(option);
         }
-        
-        // Add other users
-        users.forEach(userId => {
-            if (userId !== currentUser?.uid) {
+
+        // Add other users with emails when available
+        users.forEach(userObj => {
+            const uid = userObj.uid || userObj;
+            const email = userObj.email || null;
+            if (uid !== currentUser?.uid) {
                 const option = document.createElement('option');
-                option.value = userId;
-                option.textContent = userId.substring(0, 8) + '...'; // Truncate for display
+                option.value = uid;
+                option.textContent = email ? email : (uid.substring ? uid.substring(0, 8) + '...' : String(uid));
                 userSelector.appendChild(option);
             }
         });
@@ -329,6 +328,66 @@ function setupEventListeners() {
     editForm.addEventListener('submit', handleEditSubmit);
     exportCsvBtn.addEventListener('click', handleExportCSV);
     exportJsonBtn.addEventListener('click', handleExportJSON);
+    settingsBtn.addEventListener('click', () => settingsModalInstance.show());
+    
+    // Theme mode toggle
+    document.querySelectorAll('input[name="theme-mode"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            setThemeMode(e.target.value);
+        });
+    });
+    
+    // Color picker
+    document.getElementById('color-picker').addEventListener('click', (e) => {
+        const swatch = e.target.closest('.color-swatch');
+        if (swatch) {
+            setPrimaryColor(swatch.dataset.color);
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            swatch.classList.add('active');
+        }
+    });
+}
+
+/**
+ * Set theme mode (dark/light)
+ * @param {string} mode - 'dark' or 'light'
+ */
+function setThemeMode(mode) {
+    if (mode === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('daydicated-theme-mode', mode);
+}
+
+/**
+ * Set primary color
+ * @param {string} color - Hex color value
+ */
+function setPrimaryColor(color) {
+    document.documentElement.style.setProperty('--primary-color', color);
+    localStorage.setItem('daydicated-primary-color', color);
+}
+
+/**
+ * Load saved display settings from localStorage
+ */
+function loadDisplaySettings() {
+    // Load theme mode (default: dark)
+    const savedMode = localStorage.getItem('daydicated-theme-mode') || 'dark';
+    setThemeMode(savedMode);
+    const themeRadio = document.getElementById(`theme-${savedMode}`);
+    if (themeRadio) themeRadio.checked = true;
+    
+    // Load primary color (default: blue)
+    const savedColor = localStorage.getItem('daydicated-primary-color') || '#0d6efd';
+    setPrimaryColor(savedColor);
+    
+    // Update active swatch
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.classList.toggle('active', swatch.dataset.color === savedColor);
+    });
 }
 
 function applyThemePreference(theme) {
@@ -367,6 +426,7 @@ function initThemeToggle() {
  */
 function init() {
     initElements();
+    loadDisplaySettings();
     setupEventListeners();
     initThemeToggle();
     onAuthChange(handleAuthStateChange);
